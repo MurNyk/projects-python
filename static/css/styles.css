@@ -1,0 +1,80 @@
+.task-item.completed {
+    text-decoration: line-through;
+    color: #888888;
+}
+
+.delete-button {
+    position: absolute;
+    right: 15px;
+    top: 8px;
+    background-color: #ff4d4d; /* Ярко-красный цвет */
+    color: #fff;
+    border: none;
+    border-radius: 5px; /* Скругление углов */
+    padding: 12px 12px; /* Увеличение отступов */
+    font-size: 14px; /* Размер шрифта */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* Плавные переходы */
+}
+
+.delete-button:hover {
+    background-color: #ff1a1a; /* Темно-красный цвет при наведении */
+    transform: scale(1.05); /* Увеличение кнопки при наведении */
+}
+
+.delete-button:focus {
+    outline: none; /* Убираем стандартное обрамление при фокусе */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Добавление тени при фокусе */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+}
+  
+.container {
+    width: 50%;
+    margin: 50px auto;
+    text-align: center;
+}
+  
+.input-group {
+    margin-bottom: 20px;
+}
+  
+#taskInput {
+    width: 70%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Скругление углов */
+    transition: border-color 0.3s;
+}
+
+#taskInput:focus {
+    border-color: #007bff; /* Цвет при фокусе */
+    outline: none; /* Убираем стандартное обрамление */
+}
+  
+#addTaskButton {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+  
+#taskList {
+    list-style-type: none;
+    padding: 0;
+}
+  
+.task-item {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    position: relative;
+    text-align: left;
+}
+  
+.task-item.completed {
+    text-decoration: line-through;
+    color: #888;
+}
