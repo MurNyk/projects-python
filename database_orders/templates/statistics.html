@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статистика доставленных грузов</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Статистика доставленных грузов</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ФИО клиента</th>
+                <th>Компания</th>
+                <th>Адрес доставки</th>
+                <th>Ожидаемая дата отправки</th>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Доставлено</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for jrder in delivered_orders %}
+                <tr>
+                    <td>{{ order[1]}}</td>
+                    <td>{{ order[2]}}</td>
+                    <td>{{ order[3]}}</td>
+                    <td>{{ order[4]}}</td>
+                    <td>{{ order[5]}}</td>
+                    <td>{{ order[6]}}</td>
+                    <td>{{ order[7] if order[7] else "Не указано"}}</td>
+                </tr>
+            {% endfor %}
+            {% if delivered_orders|length == 0 %}
+                <tr>
+                    <td colspan="7">Нет доставленных грузов для отображения.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <h2>Статистика по товарам</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Имя товара</th>
+                <th>Количество доставленных товаров</th>
+                <th>Количество выполненных заказов</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in product_statistics %}
+                <tr>
+                    <td>{{product[0]}}</td>
+                    <td>{{product[1]}}</td>   
+                    <td>{{product[2]}}</td> 
+                </tr>
+            {% endfor %}
+            {% if product_statistics|length == 0 %}
+                <tr>
+                    <td colspan="3">Нет статистики по доставленным товарам.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <a href="/">Назад на главную</a>
+</body>
+</html>

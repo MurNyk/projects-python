@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявка на ремонт</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="/static/repair.js" defer></script>
+</head>
+<body>
+    <h1>Оформление заявки на ремонт</h1>
+
+    <!-- Форма выбора типа ремонта -->
+    <form action="/submit_repair_request" method="post">
+        <label for="repair_type">Выберите тип ремонта: </label>
+        <select id="repair_type" name="repair_type" onchange="toggleFormFields()">
+            <option value="">-- Выберите тип --</option>
+            <option value="vehicle">Автомобиль</option>
+            <option value="tools">Инструменты</option>
+            <option value="machines">Станки</option>
+        </select><br><br>
+
+        <!-- Поля для автомобиля -->
+        <div id="vehicle_fields" style="display:none;">
+            <h3>Информация об автомобиле</h3>
+            <label for="vehicle_model">Модель автомобиля: </label><br>
+            <input type="text" id="vehicle_model" name="vehicle_model"><br><br>
+
+            <label for="vehicle_year">Год выпуска: </label><br>
+            <input type="number" id="vehicle_year" name="vehicle_year"><br><br>
+
+            <label for="vehicle_issue">Что сломалось: </label><br>
+            <textarea id="vehicle_issue" name="vehicle_issue" rows="2" cols="50"></textarea><br><br>
+
+            <label for="vehicle_replacement">На что можно заменить: </label><br>
+            <textarea id="vehicle_replacement" name="vehicle_replacement" rows="2" cols="50"></textarea><br><br>
+            
+            <label for="vehicle_repair_duration">Предполагаемый срок ремонта: </label><br>
+            <input type="date" id="vehicle_repair_duration" name="vehicle_repair_duration"><br><br>
+        </div>
+
+        <!-- Поля для инструментов -->
+        <div id="tools_fields" style="display:none;">
+            <h3>Информация об инструментах</h3>
+            <label for="tool_type">Тип инструмента: </label><br>
+            <input type="text" id="tool_type" name="tool_type"><br><br>
+
+            <label for="tool_issue">Что сломалось: </label><br>
+            <textarea id="tool_issue" name="tool_issue" rows="2" cols="50"></textarea><br><br>
+
+            <label for="tool_replacement">На что можно заменить: </label><br>
+            <textarea id="tool_replacement" name="tool_replacement" rows="2" cols="50"></textarea><br><br>
+
+            <label for="tool_repair_duration">Предполагаемый срок ремонта: </label><br>
+            <input type="date" id="tool_repair_duration" name="tool_repair_duration"><br><br>
+        </div>
+
+        <!-- Поля для станков -->
+        <div id="machines_fields" style="display:none;">
+            <h3>Информация о станке</h3>
+            <label for="machine_model">Модель станка: </label><br>
+            <input type="text" id="machine_model" name="machine_model"><br><br>
+
+            <label for="machine_issue">Что сломалось: </label><br>
+            <textarea id="machine_issue" name="machine_issue" rows="2" cols="50"></textarea><br><br>
+
+            <label for="machine_replacement">На что можно заменить: </label><br>
+            <textarea id="machine_replacement" name="machine_replacement" rows="2" cols="50"></textarea><br><br>
+
+            <label for="machine_repair_duration">Предполагаемый срок ремонта: </label><br>
+            <input type="date" id="machine_repair_duration" name="machine_repair_duration"><br>
+        </div>
+            
+        <button type="submit">Отправить заявку</button>
+    </form>
+            
+    <h1>Заявки на ремонт</h1>
+
+    <!-- Таблица для отображения заявок на ремонт -->
+    <table>
+        <thead>
+            <tr>
+                <th>Тип ремонта</th>
+                <th>Название объекта</th>
+                <th>Описание проблемы</th>
+                <th>Замена</th>
+                <th>Срок ремонта</th>
+                <th>Дата создания</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if repair_requests %}
+                {% for request in repair_requests %}
+                    <tr>
+                        <td>{{ request[1] }}</td> <!-- Тип ремонта -->
+                        <td>{{ request[2] }}</td> <!-- Название объекта -->
+                        <td>{{ request[3] }}</td> <!-- Описание проблемы -->
+                        <td>{{ request[4] }}</td> <!-- Замена -->
+                        <td>{{ request[5] }}</td> <!-- Срок ремонта -->
+                        <td>{{ request[6] }}</td> <!-- Дата создания -->
+                        <td>{{ request[7] }}</td> <!-- Статус -->
+                        <td>
+                            <form action="/delete_repair/{{ request[0] }}" method="post" style="display:inline;">
+                                <button type="submit">Удалить</button>
+                            </form>
+                            <form action="/complete_repair/{{ request[0] }}" method="post" style="display:inline;">
+                                <button type="submit" {% if request[7] == 'выполнено' %}disabled{% endif %}>Выполнить</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="8">Нет заявок на ремонт.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <!-- Кнопка для возрата на главную-->
+    <button onclick="location.href='/'">Вернуться на главную</button>
+</body>
+</html>

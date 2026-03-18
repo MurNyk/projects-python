@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Командировка</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1>Командировка</h1>
+
+    <!-- Форма для добавления командировки -->
+    <form method="post" action="/submit_business_trip">
+        <label for="employee_name">ФИО сотрудника: </label>
+        <input type="text" id="employee_name" name="employee_name" required><br><br>
+
+        <label for="destination">Место назначения: </label>
+        <input type="text" id="destination" name="destination" required><br><br>
+
+        <label for="start_date">Дата начала: </label>
+        <input type="date" id="start_date" name="start_date" required><br><br>
+
+        <label for="end_date">Дата окончания: </label>
+        <input type="date" id="end_date" name="end_date" required><br><br>
+
+        <label for="trip_purpose">Цель поездки: </label>
+        <input type="text" id="trip_purpose" name="trip_purpose" required><br><br>
+
+        <label for="status">Статус: </label>
+        <select id="status" name="status">
+            <option value="Отправлен">Отправлен</option>
+            <option value="Закончил работу">Закончил работу</option>
+            <option value="В пути">В пути</option>
+            <option value="Отменен">Отменен</option>
+        </select><br><br>
+
+        <button type="submit">Отправить</button>
+    </form>
+
+    <h2>Список командировок</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Сотрудник</th>
+                <th>Место назначения</th>
+                <th>Дата начала</th>
+                <th>Дата окончания</th>
+                <th>Цель поездки</th>
+                <th>Статус</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if business_trips|length == 0 %}
+                <tr>
+                    <td colspan="7">Нет командировок для отображения</td>
+                </tr>
+            {% else %}
+                {% for trip in business_trips %}
+                    <tr>
+                        <td>{{ trip[1] }}</td> <!-- ФИО сотрудника -->
+                        <td>{{ trip[2] }}</td> <!-- Место назначения -->
+                        <td>{{ trip[3] }}</td> <!-- Дата начала -->
+                        <td>{{ trip[4] }}</td> <!-- Дата окончания -->
+                        <td>{{ trip[5] }}</td> <!-- Цель поездки -->
+                        <td>{{ trip[6] or "Без статуса" }}</td> <!-- Статус (если не установлен) -->
+                        <td>
+                            <!-- Кнопка Закончить-->
+                            {% if trip[6] == "Закончил работу" %}
+                                <form method="post" action="/finish_business_trip/{{ trip[0] }}" style="display:inline;">
+                                    <button type="submit">Закончить</button>
+                                </form>
+                            {% endif %}
+
+                            <!-- Кнопка Формировать PDF -->
+                            <form method="get" action="/generate_trip_pdf/{{ trip[0] }}" style="display:inline;">
+                                <button type="submit">Формировать PDF</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    
+    <!-- Кнопка для возврата -->
+    <button onclick="location.href='/'">На главную</button>
+</body>
+</html>

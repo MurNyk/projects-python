@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Текущее время</title>
+    <script src="/static/script.js" defer></script>
+    <link rel="stylesheet" href="/static/styles.css"> <!-- Fixed closing tag -->
+</head>
+<body>
+    <h1>Текущее время:</h1>
+    <h2 id="time"></h2>
+
+    <div class="navigation-buttons">
+        <button onclick="location.href='/products'">Перейти к товарам</button>
+        <button onclick="location.href='/manage_products'">Управление товарами</button>
+        <button onclick="location.href='/statistics'">Статистика</button>
+        <button onclick="location.href='/business_trip'">Командировка</button>
+        <button onclick="location.href='/production'">Производство</button>
+        <button onclick="location.href='/repair'">Ремонт</button>
+    </div>
+
+    <h2>Поиск по ФИО клиента:</h2>
+    <form method="get" action="/">
+        <input type="text" name="client_name" placeholder="Введите ФИО клиента" value ="{{ client_name }}">
+        <button type="submit">Поиск</button>
+    </form>
+
+    <h2>Заказы:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ФИО клиента</th>
+                <th>Компания</th>
+                <th>Адрес доставки</th>
+                <th>Ожидаемая дата отправки</th>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Статус</th>
+                <th>Изменить статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                 <tr>
+                    <td>{{ order[1] }}</td>
+                    <td>{{ order[2] }}</td>
+                    <td>{{ order[3] }}</td <td>{{ order[4] }}</td>
+                    <td>{{ order[5] }}</td>
+                    <td>{{ order[6] }}</td>
+                    <td>{{ order[7] }}</td>
+                    <td>
+                        <form method="post" action="/update_order_status/{{ order[0] }}" style="display:inline;">
+                            <select name="status">
+                                <option value="в обработке" {% if order[7] == 'в обработке' %}selected{% endif %}>в обработке</option>
+                                <option value="отправлен" {% if order[7] == 'отправлен' %}selected{% endif %}>отправлен</option>
+                                <option value="доставлен" {% if order[7] == 'доставлен' %}selected{% endif %}>доставлен</option>
+                            </select>
+                            <button type="submit">Изменить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% if orders|length == 0 %}
+                <tr>
+                    <td colspan="8">Нет заказов для отображения</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <h2>Данные клиента и продукта:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ФИО клиента</th>
+                <th>Продукт</th>
+                <th>Количество</th>
+                <th>Цена за продукт</th>
+                <th>Цена за отправку</th>
+                <th>Итоговая сумма</th>
+                <th>Договор</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in client_product_data %}
+                <tr>
+                    <td>{{ data[1] }}</td>  <!-- Corrected to data -->
+                    <td>{{ data[2] }}</td>  <!-- Corrected to data -->
+                    <td>{{ data[3] }}</td>  <!-- Corrected to data -->
+                    <td>{{ data[4] }}</td>  <!-- Corrected to data -->
+                    <td>{{ data[5] }}</td>  <!-- Corrected to data -->
+                    <td>
+                        <a href="/generate_contract/{{ data[0] }}/{{ data[1] }}/{{ data[2] }}/{{ data[3] }}/{{ data[5] }}" target="_blank">
+                            Сформировать договор
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% if client_product_data|length == 0 %}
+                <tr>
+                    <td colspan="7">Нет данных для отображения</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</body>
+</html>

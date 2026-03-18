@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Производство</title>
+    <link rel ="stylesheet" href="/static/styles.css">
+    <script src="/static/rashet.js" defer></script>
+</head>
+<body>
+    <h1>Поставка сырья на переработку</h1>
+
+    <h2>Формула расчета коэффициента переработки:</h2>
+    <p>Коэффициент переработки рассчитывается по следующей формуле:</p>
+    <p>
+        <strong>Коэффициент = Масса выходного продукта / Масса входного сырья</strong>
+    </p>
+    <p>Например, если после переработки из 100 кг входного сырья получилось 80 кг выходного продукта, коэффициент переработки составит 0.8</p>
+
+    <form method="post" action="/submit_raw_material">
+        <label for="material_name">Название сырья:</label>
+        <input type="text" id="material_name" name="material_name" required>
+        <br>
+
+        <label for="article">Артикул:</label>
+        <input type="text" id="article" name="article" required>
+        <br>
+
+        <label for="quantity">Количество входного сырья (в кг):</label>
+        <input type="number" id="quantity" name="quantity" required oninput="calculateProcessingCoefficient()">
+        <br>
+
+        <label for="output_quantity">Масса выходного продукта (в кг):</label>
+        <input type="number" id="output_quantity" name="output_quantity" required oninput="calculateProcessingCoefficient()">
+        <br>
+
+        <label for="supplier">Поставщик:</label>
+        <input type="text" id="supplier" name="supplier" required>
+        <br>
+
+        <label for="delivery_date">Дата поставки:</label>
+        <input type="date" id="delivery_date" name="delivery_date" required>
+        <br>
+        
+        <label for="brigade">Бригада:</label>
+        <select id="brigade" name="brigade" required>
+            <option value="Бригада №1">Бригада №1</option>
+            <option value="Бригада №2">Бригада №2</option>
+            <option value="Бригада №3">Бригада №3</option>
+            <option value="Бригада №4">Бригада №4</option>
+            <option value="Бригада №5">Бригада №5</option>
+            <option value="Бригада №6">Бригада №6</option>
+            <option value="Бригада №7">Бригада №7</option>
+            <option value="Бригада №8">Бригада №8</option>
+            <option value="Бригада №9">Бригада №9</option>
+            <option value="Бригада №10">Бригада №10</option>
+        </select>
+        <br>
+
+        <label for="start_date">Дата начала выполнения:</label>
+        <input type="date" id="start_date" name="start_date" required>
+        <br>
+
+        <label for="final_product">Что должно получиться в итоге:</label>
+        <select id="final_product" name="final_product" required>
+            <option value="Медь">Медь</option>
+            <option value="Алюминий">Алюминий</option>
+            <option value="Латунь">Латунь</option>
+            <option value="Бронза">Бронза</option>
+            <option value="Никель">Никель</option>
+            <option value="Цинк">Цинк</option>
+            <option value="Прутья">Прутья</option>
+            <option value="Листы металла">Листы металла</option>
+            <option value="Трубы">Трубы</option>
+            <option value="Проволока">Проволока</option>
+            <option value="Блоки">Блоки</option>
+            <option value="Детали">Детали</option>
+            <option value="Пластины">Пластины</option>
+            <option value="Профили">Профили</option>
+            <option value="Катанка">Катанка</option>
+            <option value="Рельсы">Рельсы</option>
+            <option value="Ленты">Ленты</option>
+            <option value="Балка">Балка</option>
+            <option value="Арматура">Арматура</option>
+            <option value="Корпусные изделия">Корпусные изделия</option>
+            <option value="Металлические профили">Металлические профили</option>
+            <option value="Металлические сетки">Металлические сетки</option>
+            <option value="Фольга">Фольга</option>
+        </select>
+        <br>
+        <label for="processing_coefficient">Коэффициент переработки:</label>
+        <input type="text" id="processing_coefficient" name="processing_coefficient" readonly>
+        <br>
+        <label for="status">Статус:</label>
+        <select id="status" name="status" required>
+            <option value="Запланировано">Запланировано</option>
+            <option value="В процессе">В процессе</option>
+            <option value="Ожидание материалов">Ожидание материалов</option>
+            <option value="Материалы получены">Материалы получены</option>
+            <option value="Выполнение отложено">Выполнение отложено</option>
+            <option value="Переработка завершена">Переработка завершена</option>
+            <option value="Отгружено">Отгружено</option>
+        </select>
+        <br>
+        <button type="submit">Отправить данные</button>
+    </form>
+
+    <h2>Список поставок сырья</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Название сырья</th>
+                <th>Артикул</th>
+                <th>Количество входного сырья</th>
+                <th>Масса выходного продукта</th>
+                <th>Поставщик</th>
+                <th>Дата поставки</th>
+                <th>Бригада</th>
+                <th>Дата начала выполнения</th>
+                <th>Что должно получиться</th>
+                <th>Коэффициент переработки</th>
+                <th>Текущий статус</th>
+                <th>Изменить статус</th>
+                <th>Документ о переработке</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for material in raw_materials %}
+                <tr>
+                    <td>{{ material[1]}}</td>
+                    <td>{{ material[2]}}</td>
+                    <td>{{ material[3]}}</td>
+                    <td>{{ material[4]}}</td>
+                    <td>{{ material[5]}}</td>
+                    <td>{{ material[6]}}</td>
+                    <td>{{ material[7]}}</td>
+                    <td>{{ material[8]}}</td>
+                    <td>{{ material[9]}}</td>
+                    <td>{{ material[10]}}</td>
+                    <td>{{ material[11]}}</td>
+                    <td>
+                        <form method="post" action="/update_status/{{ material[0]}}">
+                            <select name="status" required>
+                                <option value="Запланировано" {% if material[10] == 'Запланировано' %}selected{% endif %}>Запланировано</option>
+                                <option value="В процессе" {% if material[10] == 'В процессе' %}selected{% endif %}>В процессе</option>
+                                <option value="Ожидание материалов" {% if material[10] == 'Ожидание материалов' %}selected{% endif %}>Ожидание материалов</option>
+                                <option value="Материалы получены" {% if material[10] == 'Материалы получены' %}selected{% endif %}>Материалы получены</option>
+                                <option value="Выполнение отложено" {% if material[10] == 'Выполнение отложено' %}selected{% endif %}>Выполнение отложено</option>
+                                <option value="Переработка завершена" {% if material[10] == 'Переработка завершена' %}selected{% endif %}>Переработка завершена</option>
+                                <option value="Отгружено" {% if material[10] == 'Отгружено' %}selected{% endif %}>Отгружено</option>
+                            </select>
+                            <button type="submit">Изменить статус</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="get" action="/generate_processing_document/{{ material[0]}}" target="_blank">
+                            <button type="submit">Сформировать документ</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% if raw_materials|length == 0 %}
+                <tr>
+                    <td colspan="12">Нет записей о поставках сырья</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+
+    <a href="/">Назад к времени</a>
+</body>
+</html>

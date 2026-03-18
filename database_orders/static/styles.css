@@ -1,0 +1,19 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  .order-form {
+    margin-top: 20px;
+  }
+  #map {
+    height: 400px; /* Высота карты */
+    margin-top: 20px;
+  }

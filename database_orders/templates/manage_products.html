@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление товарами</title>
+    <link rel="stylesheet" href="/static/styles.css"> <!-- Подключение файла стилей -->
+</head>
+<body>
+    <h1>Управление товарами</h1>
+
+    <h2>Список товаров:</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Название товара</th>
+                <th>Количество</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product[1] }}</td> <!-- Название товара -->
+                    <td>{{ product[2] }}</td> <!-- Количество товара -->
+                    <td>
+                        <form method="post" action="/delete_product/{{ product[0] }}" style="display:inline;">
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2 class="order-form">Оформление заказа:</h2>
+    <form method="post" action="/place_order">
+        <label for="client_name">ФИО клиента:</label>
+        <input type="text" id="client_name" name="client_name" required>
+        <br>
+        <label for="company_name">Название компании:</label>
+        <input type="text" id="company_name" name="company_name">
+        <br>
+        <label for="delivery_address">Адрес доставки:</label>
+        <input type="text" id="delivery_address" name="delivery_address" required>
+        <br>
+        <label for="expected_date">Ожидаемая дата отправки:</label>
+        <input type="date" id="expected_date" name="expected_date" required>
+        <br>
+        <label for="product">Выберите товар:</label>
+        <select id="product" name="product_id" required>
+            <option value="">--Выберите товар--</option>
+            {% for product in products %}
+                <option value="{{ product[0] }}">{{ product[1] }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="quantity">Количество:</label>
+        <input type="number" id="quantity" name="quantity" min="1" required>
+        <br>
+        <!-- Новые поля для ввода цены за продукт и за отправку -->
+        <label for="product_price">Цена за продукт:</label>
+        <input type="number" step="0.01" id="product_price" name="product_price" required>
+        <br>
+        
+        <label for="shopping_price">Цена за отправку:</label>
+        <input type="number" step="0.01" id="shopping_price" name="shopping_price" required>
+        <br>
+        <button type="submit">Оформить заказ</button>
+    </form>
+
+    <a href="/">Назад к времени</a>
+</body>
+</html>
+

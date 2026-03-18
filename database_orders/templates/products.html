@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Товары</title>
+        <link rel="stylesheet" href="/static/styles.css"
+        <script>
+
+            function openModal(productId, productName, currentQuantity){
+                document.getElementById("modal-product-name").innerText=productName;
+                document.getElementById("product-id").value=productId;
+                document.getElementById("new-quantity").value=currentQuantity;
+                document.getElementById("quantity-modal").style.display="block";
+            }
+
+
+            function closeModal(){
+                document.getElementById("quantity-modal").style.display = "none";
+            }
+
+
+            function updateQuantity(event){
+                event.preventDefault();
+                const productId = document.getElementById("product-id").value;
+                const newQuantity = document.getElementById("new-quantity").value;
+
+                fetch(`/update_product_quantity/${productId}`,{
+                    method:"POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: `quantity=${newQuantity}`
+                }).then(response => {
+                    if (response.redirected){
+                        window,location.href = response.url;
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <h1>Список товаров</h1>
+
+        <h2>Добавить товар</h2>
+        <form method = "post" action="/add_product">
+            <label for="name">Название товара:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="quantity">Количество:</label>
+            <input type="number" id="quantity" name="quantity" required>
+            <br>
+            <label for="article">Артикул</label>
+            <input type="text" id="article" name="article">
+            <br>
+            <button type="submit">Добавить товар</button>
+        </form>
+
+        <h2>Список товаров</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Название товара</th>
+                    <th>Количество</th>
+                    <th>Артикул</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td>{{ product[1]}}</td>
+                        <td>{{ product[2]}}</td>
+                        <td>{{ product[3] or "Не указан" }}</td>
+                        <td>
+                            <form method="post" action="/delete_product/{{product[0]}}" style="display:inline;">
+                                <button type="submit">Удалить</button>
+                            </form>
+                            <button type="button" onclick="openModal('{{product[0]}}', '{{product[1]}}', '{{product[2]}}')">Редактировать
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/">Назад к времени</a>
+
+
+        <div id="quantity-modal" style="display: none; position: fixed; left:0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+        <div style="background-color: white; margin: 15% auto; padding: 20px; width: 300px;">
+            <h2> Редактировать количество</h2>
+            <p>Товар: <span id="modal-product-name"></span></p>
+            <form onsubmit="updateQuantity(event)">
+                <input type="hidden" id="product-id">
+                <label for="new-quantity">Новое количество</label>
+                <input type="number" id="new-quantity" name="quantity" required>
+                <br><br>
+                <button type="submit">Готово</button>
+                <button type="button" onclick="closeModal()">Отмена</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
